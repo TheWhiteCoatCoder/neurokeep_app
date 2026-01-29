@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NeuroKeep - Medication support for dementia care</title>
+  <meta name="description" content="NeuroKeep is a healthcare-focused mobile platform designed to improve medication adherence and daily cognitive support for people living with dementia, while reducing stress for caregivers." />
+
+  <!-- Fonts: clean but warm (sans + subtle serif for headings) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Warm, calm palette */
+      --bg: #fff7ed;          /* warm cream */
+      --surface: #ffffff;
+      --ink: #0f172a;         /* deep slate */
+      --muted: #475569;       /* slate */
+      --border: rgba(15, 23, 42, .10);
+
+      --accent: #ea580c;      /* warm orange */
+      --accent2: #db2777;     /* soft rose */
+      --good: #16a34a;        /* calm green */
+
+      --shadow: 0 18px 50px rgba(15, 23, 42, .12);
+      --shadow-soft: 0 10px 30px rgba(15, 23, 42, .08);
+
+      --radius: 18px;
+      --radius2: 26px;
+
+      --max: 1120px;
+    }
+
+    *{ box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 600px at 15% 5%, rgba(234, 88, 12, .12), transparent 55%),
+        radial-gradient(900px 600px at 85% 15%, rgba(219, 39, 119, .10), transparent 55%),
+        linear-gradient(180deg, var(--bg), #ffffff 55%, #ffffff);
+      line-height: 1.55;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+    .container{ max-width: var(--max); margin: 0 auto; padding: 0 22px; }
+
+    /* Top bar */
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, .72);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(15, 23, 42, .08);
+    }
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      height: 72px;
+      gap: 14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap: 10px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .mark{
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(234,88,12,.18), rgba(219,39,119,.16));
+      border: 1px solid rgba(15,23,42,.10);
+      display:grid; place-items:center;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, .08);
+    }
+    .mark svg{ width: 18px; height: 18px; }
+    .links{
+      display:flex; align-items:center; gap: 18px;
+      font-weight: 600;
+      color: rgba(15, 23, 42, .72);
+      font-size: 14px;
+    }
+    .links a{
+      padding: 8px 10px;
+      border-radius: 10px;
+    }
+    .links a:hover{
+      background: rgba(234, 88, 12, .08);
+      color: rgba(15, 23, 42, .92);
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor:pointer;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+      white-space: nowrap;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn-primary{
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      box-shadow: 0 12px 26px rgba(234, 88, 12, .22);
+    }
+    .btn-primary:hover{
+      box-shadow: 0 18px 40px rgba(234, 88, 12, .26);
+      transform: translateY(-1px);
+    }
+
+    /* Telegram CTA */
+    .btn-telegram{
+      background: linear-gradient(135deg, #2AABEE, #229ED9);
+      color: #fff;
+      box-shadow: 0 12px 26px rgba(34, 158, 217, .28);
+    }
+    .btn-telegram:hover{
+      box-shadow: 0 18px 40px rgba(34, 158, 217, .34);
+      transform: translateY(-1px);
+    }
+
+    /* Hero */
+    .hero{ padding: 74px 0 44px; }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 26px;
+      align-items: center;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(255,255,255,.7);
+      box-shadow: 0 10px 24px rgba(15,23,42,.05);
+      color: rgba(15,23,42,.74);
+      font-weight: 600;
+      font-size: 13px;
+      width: fit-content;
+    }
+    h1{
+      font-family: Fraunces, Inter, system-ui, sans-serif;
+      font-size: 54px;
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      margin: 14px 0 14px;
+    }
+    .sub{
+      font-size: 18px;
+      color: rgba(15,23,42,.70);
+      max-width: 58ch;
+      margin: 0 0 22px;
+    }
+    .hero-actions{
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 18px 0 6px;
+    }
+    .fineprint{
+      margin-top: 10px;
+      font-size: 13px;
+      color: rgba(15,23,42,.56);
+    }
+
+    /* Phone mock */
+    .phone{
+      border-radius: 28px;
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(15,23,42,.12);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    .screen{
+      background: #fff;
+      border-radius: 22px;
+      border: 1px solid rgba(15,23,42,.10);
+      overflow: hidden;
+    }
+    .screen-top{
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid rgba(15,23,42,.06);
+      background: linear-gradient(180deg, rgba(234,88,12,.06), transparent);
+    }
+    .screen-top .time{
+      font-size: 12px;
+      color: rgba(15,23,42,.55);
+      margin-bottom: 6px;
+    }
+    .screen-top .title{
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      font-size: 20px;
+    }
+    .card{ padding: 16px 16px 18px; display: grid; gap: 12px; }
+    .med{
+      border-radius: 18px;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(255, 247, 237, .55);
+      padding: 14px;
+      display:grid;
+      gap: 8px;
+    }
+    .med .name{
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .med .dose{
+      font-size: 16px;
+      color: rgba(15,23,42,.66);
+      font-weight: 600;
+    }
+    .med .sched{ font-size: 14px; color: rgba(15,23,42,.70); }
+    .take{
+      width: 100%;
+      border-radius: 14px;
+      border: 0;
+      padding: 14px 14px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, var(--good), #22c55e);
+      box-shadow: 0 12px 24px rgba(22,163,74,.20);
+    }
+
+    /* Sections */
+    section{ scroll-margin-top: 86px; }
+    .section{ padding: 54px 0; }
+    .panel{
+      border-radius: var(--radius2);
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(255,255,255,.78);
+      box-shadow: var(--shadow-soft);
+      padding: 26px;
+    }
+    .section h2{
+      font-family: Fraunces, Inter, system-ui, sans-serif;
+      letter-spacing: -0.02em;
+      font-size: 34px;
+      margin: 0 0 10px;
+    }
+    .lead{
+      color: rgba(15,23,42,.70);
+      margin: 0 0 18px;
+      font-size: 16px;
+      max-width: 70ch;
+    }
+    .grid3{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .grid2{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .tile{
+      border-radius: var(--radius);
+      border: 1px solid rgba(15,23,42,.10);
+      background: #fff;
+      padding: 18px;
+    }
+    .tile h3{ margin: 0 0 6px; font-size: 16px; letter-spacing: -0.01em; }
+    .tile p{ margin: 0; color: rgba(15,23,42,.68); font-size: 14px; }
+    ul.clean{ margin: 12px 0 0; padding-left: 18px; color: rgba(15,23,42,.74); }
+    ul.clean li{ margin: 8px 0; }
+    .split{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(234,88,12,.06);
+      color: rgba(15,23,42,.78);
+      font-weight: 700;
+      font-size: 12px;
+      width: fit-content;
+    }
+
+    /* Team */
+    .team{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .person{
+      border-radius: var(--radius);
+      border: 1px solid rgba(15,23,42,.10);
+      background: #fff;
+      padding: 18px;
+      display:grid;
+      gap: 10px;
+    }
+    .avatar{
+      width: 46px; height: 46px;
+      border-radius: 16px;
+      border: 1px solid rgba(15,23,42,.10);
+      background: linear-gradient(135deg, rgba(234,88,12,.14), rgba(219,39,119,.12));
+      display:grid; place-items:center;
+      font-weight: 900;
+      color: rgba(15,23,42,.82);
+    }
+    .person .name{ font-weight: 900; letter-spacing: -0.01em; }
+    .person .role{ font-weight: 700; color: rgba(234,88,12,.88); font-size: 13px; margin-top: -6px; }
+    .person .bio{ color: rgba(15,23,42,.70); font-size: 14px; margin: 0; }
+
+    footer{ padding: 34px 0 50px; color: rgba(15,23,42,.60); font-size: 13px; }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero-grid{ grid-template-columns: 1fr; }
+      .grid3{ grid-template-columns: 1fr; }
+      .grid2{ grid-template-columns: 1fr; }
+      .split{ grid-template-columns: 1fr; }
+      .team{ grid-template-columns: 1fr; }
+      h1{ font-size: 40px; }
+      .links{ display:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="nav">
+        <a class="brand" href="#top" aria-label="NeuroKeep home">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 21c-4.97-4.25-8-7.2-8-11.3A4.7 4.7 0 0 1 8.7 5c1.5 0 2.9.7 3.8 1.8C13.4 5.7 14.8 5 16.3 5A4.7 4.7 0 0 1 21 9.7c0 4.1-3.03 7.05-9 11.3Z" stroke="rgba(15,23,42,.78)" stroke-width="1.6"/>
+            </svg>
+          </span>
+          <span>NeuroKeep</span>
+        </a>
+
+        <nav class="links" aria-label="Page">
+          <a href="#why">Why this</a>
+          <a href="#mvp">MVP</a>
+          <a href="#ai">AI roadmap</a>
+          <a href="#trust">Trust</a>
+          <a href="#team">Team</a>
+        </nav>
+
+        <a class="btn btn-telegram" href="https://t.me/neurokeepinfo" target="_blank" rel="noopener">Get updates on Telegram</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <div class="badge">Designed for dementia care - calm, simple, dependable</div>
+          <h1>Help families stay on track with medication.</h1>
+          <p class="sub">
+            NeuroKeep is a healthcare-focused mobile platform designed to improve medication adherence and daily cognitive support for people living with dementia, while reducing stress and uncertainty for caregivers and healthcare providers.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-telegram" href="https://t.me/neurokeepinfo" target="_blank" rel="noopener">Get updates on Telegram</a>
+          </div>
+          <div class="fineprint">
+            MVP-first. No hype. Built around reliability and usability.
+          </div>
+        </div>
+
+        <aside class="phone" aria-label="App preview">
+          <div class="screen">
+            <div class="screen-top">
+              <div class="time">Today</div>
+              <div class="title">My medications</div>
+            </div>
+            <div class="card">
+              <div class="med">
+                <div class="name">Donepezil</div>
+                <div class="dose">10 mg</div>
+                <div class="sched">Morning - 09:00</div>
+                <button class="take" type="button">Taken</button>
+              </div>
+              <div class="med">
+                <div class="name">Memantine</div>
+                <div class="dose">5 mg</div>
+                <div class="sched">Evening - 21:00</div>
+                <button class="take" type="button">Taken</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <section id="why" class="section">
+    <div class="container">
+      <div class="panel">
+        <h2>Why this matters</h2>
+        <p class="lead">
+          Dementia affects memory, attention, and executive function, and medication non-adherence can lead to missed or incorrect doses, increased hospitalizations, accelerated decline, and heavy caregiver burden.
+        </p>
+
+        <div class="grid3">
+          <div class="tile">
+            <h3>The daily crisis</h3>
+            <p>Medication adherence is one of the most immediate and dangerous pain points in dementia care.</p>
+          </div>
+          <div class="tile">
+            <h3>Rigid tools break first</h3>
+            <p>Traditional tools like alarms, pill boxes, and manual reminders can fail as cognitive function declines.</p>
+          </div>
+          <div class="tile">
+            <h3>Families carry the load</h3>
+            <p>The burden becomes emotional and logistical for caregivers and families.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mvp" class="section">
+    <div class="container">
+      <div class="panel">
+        <span class="tag">MVP: reliability first</span>
+        <h2>What NeuroKeep does in v1</h2>
+        <p class="lead">
+          The first version focuses on solving the core daily crisis with simple reminders, one-tap confirmation, missed-dose detection, caregiver visibility (logs and alerts), and an accessibility-first UI.
+        </p>
+
+        <div class="split">
+          <div class="tile">
+            <h3>For patients</h3>
+            <ul class="clean">
+              <li>Simple medication reminders.</li>
+              <li>One-tap confirmation of intake.</li>
+              <li>Accessibility-first UI (large text, minimal interaction).</li>
+            </ul>
+          </div>
+
+          <div class="tile">
+            <h3>For caregivers</h3>
+            <ul class="clean">
+              <li>Caregiver visibility (logs and alerts).</li>
+              <li>Missed-dose detection.</li>
+              <li>Less uncertainty day-to-day.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ai" class="section">
+    <div class="container">
+      <div class="panel">
+        <span class="tag">Roadmap: intelligence that doesn't overwhelm</span>
+        <h2>Future AI features (when the basics are rock-solid)</h2>
+        <p class="lead">
+          NeuroKeep is designed around simplicity for patients, visibility for caregivers, and intelligence that adapts, not overwhelms.
+        </p>
+
+        <div class="grid2">
+          <div class="tile">
+            <h3>Context-aware smart reminders</h3>
+            <p>Personalized reminders that adapt to routines and real-world behavior over time.</p>
+            <ul class="clean">
+              <li>Context-aware smart reminders (AI personalization).</li>
+              <li>On-device prediction using lightweight ML models.</li>
+              <li>On-device inference where possible for privacy.</li>
+            </ul>
+          </div>
+
+          <div class="tile">
+            <h3>Beyond adherence</h3>
+            <p>Support that expands into daily cognitive care once adherence is dependable.</p>
+            <ul class="clean">
+              <li>Cognitive training modules (research-backed).</li>
+              <li>Wearable integration.</li>
+              <li>B2B dashboards for clinics and care facilities.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="trust" class="section">
+    <div class="container">
+      <div class="panel">
+        <h2>Trust, privacy, and safety</h2>
+        <p class="lead">
+          The planned platform emphasizes data minimization, encryption, on-device inference where possible, and GDPR/HIPAA-aware design.
+        </p>
+
+        <div class="grid3">
+          <div class="tile">
+            <h3>Privacy-first</h3>
+            <p>Data minimization and privacy-by-design are part of the core plan.</p>
+          </div>
+          <div class="tile">
+            <h3>Secure access</h3>
+            <p>Role-based access (patient/caregiver) and encrypted data storage are part of the planned stack.</p>
+          </div>
+          <div class="tile">
+            <h3>Responsible AI</h3>
+            <p>AI is planned as a future phase with lightweight models and on-device inference.</p>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="tile">
+          <h3>Early validation</h3>
+          <p style="margin:0; color: rgba(15,23,42,.70);">
+            The idea has been discussed with doctors and caregivers, tested as a Telegram bot prototype, presented in a university medical startup acceleration program, and refined through visits to healthcare facilities.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="team" class="section">
+    <div class="container">
+      <div class="panel">
+        <h2>Founders</h2>
+        <p class="lead">
+          Built by a team combining medical training, product development, and hospital outreach in Russia.
+        </p>
+
+        <div class="team">
+          <div class="person">
+            <div class="avatar" aria-hidden="true">P</div>
+            <div class="name">Priyanshu</div>
+            <div class="role">Co-founder</div>
+            <p class="bio">
+              Medical student at Kazan State Medical University with a background in medicine, AI, and healthcare-focused product development.
+            </p>
+          </div>
+
+          <div class="person">
+            <div class="avatar" aria-hidden="true">S</div>
+            <div class="name">Самир Яхин (Samir Yakhin)</div>
+            <div class="role">Co-founder</div>
+            <p class="bio">
+              Responsible for hospital outreach, stakeholder communication, and coordination with healthcare professionals across Russian medical institutions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <span>© 2026 NeuroKeep</span>
+        <span>Bootstrapped • MVP in development • Follow on Telegram for updates.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll for in-page links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        const target = document.querySelector(href);
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>
+
